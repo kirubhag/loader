@@ -3,15 +3,23 @@ var library = {
 
     allowedType: ["js", "css"],
     ErrorStatus: true,
+    doNotValidateURL: true,
     searchObject: {},
     queries: null,
     split: null,
     i: null,
+    ext: null,
     head: document.getElementsByTagName('head')[0],
     script: document.createElement('script'),
+    link: document.createElement('link'),
     scriptOption: {
         type: 'text/javascript',
         src: null
+    },
+    linkOption: {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href: null
     },
     urlRegEx: /^(ftp|http|https):\/\/[^ "]+$/,
     defaultError: {
@@ -33,17 +41,31 @@ var library = {
         return (this.allowedType.indexOf(ext) !== -1) ? true : false;
     },
     isAllowedFileToLoad: function(url) {
-        if (this.isUrl(url)) {
+        if (this.isUrl(url) || this.doNotValidateURL) {
             this.file = this.getFileName(url);
-            if (this.hasValidExtension(this.file.split('.').pop())) {
-                this.script.type = this.scriptOption.type;
-                this.script.src = url;
-                this.head.appendChild(this.script);
+            this.ext = this.file.split('.').pop();
+            if (this.hasValidExtension(this.ext)) {
+                this.load(url, this.ext);
             } else {
                 this.throughError(this.defaultError.Error_2);
             }
         } else {
             this.throughError(this.defaultError.Error_1);
+        }
+    },
+    load: function(url, ext) {
+        switch (ext) {
+            case "js":
+                this.script.type = this.scriptOption.type;
+                this.script.src = url;
+                this.head.appendChild(this.script);
+                break;
+            case "css":
+                this.link.rel = this.linkOption.rel;
+                this.link.type = this.linkOption.type;
+                this.link.href = url;
+                this.head.appendChild(this.link);
+                break;
         }
     },
     /*@url    : receive user input
@@ -90,69 +112,3 @@ function loader(url) {
     library.isAllowedFileToLoad(url)
 
 }
-/*
- senaroi:1
- ---------
- 
- var subject = 'hello/world/test/index.php';
- var regex = /(?:[^\/\\]+|\\.)+/g;
- var matched = null;
- while (matched = regex.exec(subject)) {
- console.log(matched[0]);
- }
- */
-/*
- var subject = 'hello/world/test/index.php';
- var regex = /(?:[^\/\\]+|\\.)+/g;
- var matched = null;
- while (matched = regex.exec(subject)) {
- console.log(matched[0]);
- }
- */
-
-/*	
- Reference: http://www.abeautifulsite.net/blog/2013/10/parsing-urls-in-javascript/
- function parseURL(url) {
- 
- var parser = document.createElement('a'),
- searchObject = {},
- queries, split, i;
- 
- // Let the browser do the work
- parser.href = url;
- 
- // Convert query string to object
- queries = parser.search.replace(/^\?/, '').split('&');
- for( i = 0; i < queries.length; i++ ) {
- split = queries[i].split('=');
- searchObject[split[0]] = split[1];
- }
- 
- return {
- protocol: parser.protocol,
- host: parser.host,
- hostname: parser.hostname,
- port: parser.port,
- pathname: parser.pathname,
- search: parser.search,
- searchObject: searchObject,
- hash: parser.hash
- };
- 
- }
- */
-
-
-/*
- Reference:https://gist.github.com/2428561.git or https://gist.github.com/jlong/2428561
- var parser = document.createElement('a');
- parser.href = "http://example.com:3000/pathname/?search=test#hash";
- 
- parser.protocol; // => "http:"
- parser.hostname; // => "example.com"
- parser.port;     // => "3000"
- parser.pathname; // => "/pathname/"
- parser.search;   // => "?search=test"
- parser.hash;     // => "#hash"
- parser.host;     // => "example.com:3000"
- */

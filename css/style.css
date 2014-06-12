@@ -1,0 +1,45 @@
+a{
+	text-decoration:none;
+	color:#fff;
+}
+.social-holder{
+	margin:0px;
+	width:100%;
+	height:45px;
+	background-color:#000;
+}
+ul.social-icon{
+	list-style:none;
+	padding:0;
+	margin:0;
+	line-height:45px;
+}
+
+ul.social-icon li{
+	display:inline;
+}
+
+ul.social-icon li a,.icon{
+	/*padding:20px;*/
+	width:58.22px;
+	height:68.5px;
+}
+
+ul.social-icon li a:hover{
+	background-position:-186.5px -210.89px;
+}
+
+.icon{
+	width:58.22px;
+	height:68.5px;
+	background-image:url('../image/image.png');
+}
+
+.fb{
+	background-position:-188px -274.89px;
+}
+
+
+.fb-hover{
+	background-position:-68.5px -232.89px;
+}
